@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/indective/VSCode/Projects/physicsengine/build",
+  "command": "/usr/bin/g++  -I/home/indective/VSCode/Projects/physicsengine/include -g -std=gnu++17 -I/usr/include -o CMakeFiles/engine.dir/src/bodies.cpp.o -c /home/indective/VSCode/Projects/physicsengine/src/bodies.cpp",
+  "file": "/home/indective/VSCode/Projects/physicsengine/src/bodies.cpp",
+  "output": "CMakeFiles/engine.dir/src/bodies.cpp.o"
+},
+{
+  "directory": "/home/indective/VSCode/Projects/physicsengine/build",
+  "command": "/usr/bin/g++  -I/home/indective/VSCode/Projects/physicsengine/include -g -std=gnu++17 -I/usr/include -o CMakeFiles/engine.dir/src/main.cpp.o -c /home/indective/VSCode/Projects/physicsengine/src/main.cpp",
+  "file": "/home/indective/VSCode/Projects/physicsengine/src/main.cpp",
+  "output": "CMakeFiles/engine.dir/src/main.cpp.o"
+}
+]
