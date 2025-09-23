@@ -1,6 +1,7 @@
 #pragma once
 #include "raylib.h"
 #include <iostream>
+#include <vector>
 
 
 struct AABB
@@ -9,6 +10,9 @@ struct AABB
     Vector2 position;
     Vector2 acceleration;
     float width, height;
+    std::string name;
+    Color color;
+    std::vector<Vector2> trail;
 };
 
 class bodies
@@ -20,5 +24,6 @@ public:
     bool AABBvsAABB(AABB& a, AABB& b);
     void collisionres(AABB& a, AABB& ground);
     void update(AABB& a);
+    void draw(AABB& a);
 };
 

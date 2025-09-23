@@ -1,5 +1,6 @@
 #include "bodies.hpp"
 #include "raylib.h"
+#include "raymath.h"
 #include <iostream>
 
 bool bodies::AABBvsAABB(AABB& a, AABB& b)
@@ -10,16 +11,45 @@ bool bodies::AABBvsAABB(AABB& a, AABB& b)
             a.position.y + a.height > b.position.y);
 }
 
-void bodies::collisionres(AABB &a, AABB& ground)
+void bodies::collisionres(AABB &a, AABB& b)
 {
-    if (AABBvsAABB(a, ground)) 
+    if (AABBvsAABB(a, b)) 
     {
-        // Put box on top of ground
-        a.position.y = ground.position.y - a.height;
+        // compute overlap depths
+        float overlapX = std::min(a.position.x + a.width, b.position.x + b.width) -
+                        std::max(a.position.x, b.position.x);
 
-        // Stop downward velocity
-        a.velocity.y = 0;
-        a.acceleration.y = 0;
+        float overlapY = std::min(a.position.y + a.height, b.position.y + b.height) -
+                        std::max(a.position.y, b.position.y);
+
+        // resolve along the shallowest axis
+        if (overlapX < overlapY)
+        {
+            if (a.position.x < b.position.x) 
+            {
+                a.position.x -= overlapX;  
+            }
+            else 
+            {
+                a.position.x += overlapX; 
+            }
+
+            a.velocity.x *= -0.5f; // 
+        }
+        else
+        {
+            if (a.position.y < b.position.y) 
+            {
+                a.position.y -= overlapY;  
+            }
+            else 
+            {
+                a.position.y += overlapY;  
+            }
+
+            a.velocity.y *= -0.5f; // bounce with damping
+        }
+        
     }
 }
 
@@ -28,9 +58,16 @@ void bodies::update(AABB &a)
     // Apply acceleration to velocity
     a.velocity.x += a.acceleration.x * GetFrameTime();
     a.velocity.y += a.acceleration.y * GetFrameTime();
-    std::cout << "Velocity after change : " << a.velocity.x << " " << a.velocity.y << std::endl;
 
     // Apply velocity to position
     a.position.x += a.velocity.x * GetFrameTime();
     a.position.y += a.velocity.y * GetFrameTime();
+    a.trail.push_back(a.position);
 }
+
+void bodies::draw(AABB &a)
+{
+    DrawRectangle(a.position.x,a.position.y,a.width,a.height,a.color);
+}
+
+
