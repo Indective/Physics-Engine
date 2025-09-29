@@ -15,6 +15,17 @@ struct AABB
     std::vector<Vector2> trail;
 };
 
+struct circle
+{
+    Vector2 velocity;
+    Vector2 position;
+    Vector2 acceleration;
+    float radius;
+    std::string name;
+    Color color;
+    std::vector<Vector2> trail;
+};
+
 class bodies
 {
 private:
@@ -25,5 +36,6 @@ public:
     void collisionres(AABB& a, AABB& ground);
     void update(AABB& a);
     void draw(AABB& a);
+    AABB &spawnobject(Vector2 velocity, Vector2 poistion, Vector2 acceleration, float width, float height, std::string name, Color color,  std::vector<AABB> &objects);
 };
 

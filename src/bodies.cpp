@@ -55,13 +55,9 @@ void bodies::collisionres(AABB &a, AABB& b)
 
 void bodies::update(AABB &a)
 {
-    // Apply acceleration to velocity
-    a.velocity.x += a.acceleration.x * GetFrameTime();
-    a.velocity.y += a.acceleration.y * GetFrameTime();
+    a.position.x = 2 * a.position.x - a.trail.back().x + a.acceleration.x * (dt * dt);
+    a.position.y = 2 * a.position.y - a.trail.back().y + a.acceleration.y * (dt * dt);
 
-    // Apply velocity to position
-    a.position.x += a.velocity.x * GetFrameTime();
-    a.position.y += a.velocity.y * GetFrameTime();
     a.trail.push_back(a.position);
 }
 
@@ -70,4 +66,17 @@ void bodies::draw(AABB &a)
     DrawRectangle(a.position.x,a.position.y,a.width,a.height,a.color);
 }
 
-
+AABB &bodies::spawnobject(Vector2 velocity, Vector2 poistion, Vector2 acceleration, float width, float height, std::string name, Color color, std::vector<AABB> &objects)
+{
+    AABB newobject;
+    newobject.position = poistion;
+    newobject.width = width;
+    newobject.height = height;
+    newobject.velocity = velocity;
+    newobject.acceleration = acceleration;
+    newobject.name = name;
+    newobject.color = color;
+    newobject.trail.push_back(newobject.position);
+    objects.push_back(newobject);
+    return objects.back();
+}
