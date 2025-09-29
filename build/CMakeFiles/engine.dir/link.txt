@@ -1,1 +1,0 @@
-/usr/bin/g++ -g -Wl,--dependency-file=CMakeFiles/engine.dir/link.d CMakeFiles/engine.dir/src/bodies.cpp.o CMakeFiles/engine.dir/src/main.cpp.o -o engine  /usr/lib64/libraylib.so -lm -lpthread -ldl -lrt -lX11 -L/usr/lib64 -lraylib

@@ -1,3 +1,0 @@
-/home/indective/VSCode/Projects/physicsengine/build/CMakeFiles/engine.dir
-/home/indective/VSCode/Projects/physicsengine/build/CMakeFiles/edit_cache.dir
-/home/indective/VSCode/Projects/physicsengine/build/CMakeFiles/rebuild_cache.dir
