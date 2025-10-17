@@ -13,29 +13,21 @@ struct AABB
     std::string name;
     Color color;
     std::vector<Vector2> trail;
-};
+    const float g = 100;
 
-struct circle
-{
-    Vector2 velocity;
-    Vector2 position;
-    Vector2 acceleration;
-    float radius;
-    std::string name;
-    Color color;
-    std::vector<Vector2> trail;
 };
 
 class bodies
 {
 private:
-    const float dt = GetFrameTime();
+    const float friction = 100.0f;
  
 public:
     bool AABBvsAABB(AABB& a, AABB& b);
     void collisionres(AABB& a, AABB& ground);
-    void update(AABB& a);
+    void update(AABB& a, AABB& b, const float dt);
     void draw(AABB& a);
-    AABB &spawnobject(Vector2 velocity, Vector2 poistion, Vector2 acceleration, float width, float height, std::string name, Color color,  std::vector<AABB> &objects);
+    void applyfriction(AABB& a, AABB &b, const float dt);
+    bool AABBvsGround(AABB& a, AABB& b);
 };
 

@@ -2,13 +2,14 @@
 #include "raylib.h"
 #include "raymath.h"
 #include <iostream>
+#include <cmath>
 
 bool bodies::AABBvsAABB(AABB& a, AABB& b)
 {
     return (a.position.x < b.position.x + b.width &&
             a.position.x + a.width > b.position.x &&
             a.position.y < b.position.y + b.height &&
-            a.position.y + a.height > b.position.y);
+            a.position.y + a.height > b.position.y && (a.name != "ground" && b.name != "ground"));
 }
 
 void bodies::collisionres(AABB &a, AABB& b)
@@ -17,10 +18,10 @@ void bodies::collisionres(AABB &a, AABB& b)
     {
         // compute overlap depths
         float overlapX = std::min(a.position.x + a.width, b.position.x + b.width) -
-                        std::max(a.position.x, b.position.x);
+                         std::max(a.position.x, b.position.x);
 
         float overlapY = std::min(a.position.y + a.height, b.position.y + b.height) -
-                        std::max(a.position.y, b.position.y);
+                         std::max(a.position.y, b.position.y);
 
         // resolve along the shallowest axis
         if (overlapX < overlapY)
@@ -33,8 +34,10 @@ void bodies::collisionres(AABB &a, AABB& b)
             {
                 a.position.x += overlapX; 
             }
-
-            a.velocity.x *= -0.5f; // 
+            if(a.velocity.x > 1.0)
+            {
+                a.velocity.x *= -0.5f;
+            }
         }
         else
         {
@@ -51,32 +54,66 @@ void bodies::collisionres(AABB &a, AABB& b)
         }
         
     }
+    else if(AABBvsGround(a,b))
+    {
+        float overlapY = std::min(a.position.y + a.height, b.position.y + b.height) -
+                         std::max(a.position.y, b.position.y);
+        if (a.position.y < b.position.y) 
+        {
+            a.position.y -= overlapY;  
+        }
+        else 
+        {
+            a.position.y += overlapY;  
+        }
+
+        a.velocity.y *= -0.5f; 
+    }
 }
 
-void bodies::update(AABB &a)
+
+void bodies::update(AABB &a, AABB& b,const float dt)
 {
-    a.position.x = 2 * a.position.x - a.trail.back().x + a.acceleration.x * (dt * dt);
-    a.position.y = 2 * a.position.y - a.trail.back().y + a.acceleration.y * (dt * dt);
+    if (AABBvsGround(a, b) && b.name == "ground")
+    {
+        applyfriction(a, b, dt);
+    }
+    else
+    {
+        a.velocity.y += a.acceleration.y * dt;
+        a.velocity.x += a.acceleration.x * dt;
+    }
 
+    a.position.x += a.velocity.x * dt;
+    a.position.y += a.velocity.y * dt;
+    std::cout << a.name << " velocity x " << a.velocity.x << std::endl;
     a.trail.push_back(a.position);
-}
+} 
 
 void bodies::draw(AABB &a)
 {
     DrawRectangle(a.position.x,a.position.y,a.width,a.height,a.color);
 }
 
-AABB &bodies::spawnobject(Vector2 velocity, Vector2 poistion, Vector2 acceleration, float width, float height, std::string name, Color color, std::vector<AABB> &objects)
+void bodies::applyfriction(AABB &a, AABB &b,const float dt)
 {
-    AABB newobject;
-    newobject.position = poistion;
-    newobject.width = width;
-    newobject.height = height;
-    newobject.velocity = velocity;
-    newobject.acceleration = acceleration;
-    newobject.name = name;
-    newobject.color = color;
-    newobject.trail.push_back(newobject.position);
-    objects.push_back(newobject);
-    return objects.back();
+    if (AABBvsGround(a, b) && b.name == "ground")
+    {
+        if (a.velocity.x > 0)   
+            a.velocity.x -= friction * dt;
+        else if (a.velocity.x < 0)
+            a.velocity.x += friction * dt;
+
+        if (fabs(a.velocity.x) < 1.0f)
+            a.velocity.x = 0.0f;
+            std::cout << a.name << " velocity after change : " << a.velocity.x << std::endl;
+    }
+}
+
+bool bodies::AABBvsGround(AABB &a, AABB &b)
+{
+    return (a.position.x < b.position.x + b.width &&
+            a.position.x + a.width > b.position.x &&
+            a.position.y < b.position.y + b.height &&
+            a.position.y + a.height > b.position.y && (a.name == "ground" || b.name == "ground"));
 }
