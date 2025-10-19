@@ -73,7 +73,6 @@ void bodies::collisionres(AABB &a, AABB& b)
 
 }
 
-
 void bodies::update(AABB &a, AABB& b,const float dt)
 {
     if (AABBvsGround(a, b) && b.name == "ground")
@@ -82,7 +81,6 @@ void bodies::update(AABB &a, AABB& b,const float dt)
     }
     else
     {
-        std::cout << "not on ground " << std::endl;
         a.velocity.y += a.acceleration.y * dt;
         a.velocity.x += a.acceleration.x * dt;
     }
@@ -100,11 +98,12 @@ void bodies::draw(AABB &a)
 
 void bodies::applyfriction(AABB &a, AABB &b,const float dt)
 {
-    const float stopThreshold = 0.05f;
+    const float stopThreshold = 0.5f;
     const float frictionForce = friction * dt;
 
-    if (fabs(a.velocity.x) <= stopThreshold)
+    if (abs(a.velocity.x - stopThreshold) <= 0.5f)
     {
+        std::cout << "some shit" << std::endl;
         a.velocity.x = 0.0f;
         return;
     }
