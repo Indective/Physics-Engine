@@ -103,7 +103,6 @@ void bodies::applyfriction(AABB &a, AABB &b,const float dt)
 
     if (abs(a.velocity.x - stopThreshold) <= 0.5f)
     {
-        std::cout << "some shit" << std::endl;
         a.velocity.x = 0.0f;
         return;
     }
