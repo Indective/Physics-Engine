@@ -16,14 +16,12 @@ void bodies::collisionres(AABB &a, AABB& b)
 {
     if (AABBvsAABB(a, b)) 
     {
-        // compute overlap depths
         float overlapX = std::min(a.position.x + a.width, b.position.x + b.width) -
                          std::max(a.position.x, b.position.x);
 
         float overlapY = std::min(a.position.y + a.height, b.position.y + b.height) -
                          std::max(a.position.y, b.position.y);
 
-        // resolve along the shallowest axis
         if (overlapX < overlapY)
         {
             if (a.position.x < b.position.x) 
@@ -41,6 +39,7 @@ void bodies::collisionres(AABB &a, AABB& b)
         }
         else
         {
+            a.velocity.y = 0;
             if (a.position.y < b.position.y) 
             {
                 a.position.y -= overlapY;  
@@ -75,7 +74,9 @@ void bodies::collisionres(AABB &a, AABB& b)
 
 void bodies::update(AABB &a, AABB& b,const float dt)
 {
-    if (AABBvsGround(a, b))
+    std::cout << a.name << " poistion y : " << a.position.y << std::endl;
+    std::cout << a.name << " acc y : " << a.acceleration.y << std::endl;
+    if (AABBvsGround(a, b) && b.name == "ground")
     {
         applyfriction(a, b, dt);
     }
@@ -88,7 +89,6 @@ void bodies::update(AABB &a, AABB& b,const float dt)
 
     a.position.x += a.velocity.x * dt;
     a.position.y += a.velocity.y * dt;
-    std::cout << a.name << " velocity x " << a.velocity.x << std::endl;
     a.trail.push_back(a.position);
 } 
 
@@ -101,6 +101,12 @@ void bodies::applyfriction(AABB &a, AABB &b,const float dt)
 {
     const float stopThreshold = 0.5f;
     const float frictionForce = friction * dt;
+
+    if(abs(a.velocity.y < 10))
+    {
+        a.velocity.y = 0;
+        a.acceleration.y = 0;
+    }
 
     if (abs(a.velocity.x - stopThreshold) <= 0.5f)
     {
@@ -120,22 +126,13 @@ void bodies::applyfriction(AABB &a, AABB &b,const float dt)
 
 bool bodies::AABBvsGround(AABB &a, AABB &b)
 {
-    if (b.name != "ground" && a.name != "ground") return false;
-
+    if (b.name != "ground" && a.name != "ground") 
+    {
+        return false;
+    }
+    
     AABB& obj = (a.name == "ground") ? b : a;
     AABB& ground = (a.name == "ground") ? a : b;
 
-    bool overlapX = obj.position.x + obj.width > ground.position.x &&
-                    obj.position.x < ground.position.x + ground.width;
-
-    bool onTop = obj.position.y + obj.height >= ground.position.y &&
-                 obj.position.y + obj.height <= ground.position.y + 20; 
-
-    if (overlapX && onTop)
-    {
-        obj.position.y = ground.position.y - obj.height; 
-        return true;
-    }
-
-    return false;
+    return obj.position.y + obj.height >= ground.position.y;
 }

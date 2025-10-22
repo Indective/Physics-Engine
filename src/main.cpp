@@ -79,7 +79,6 @@ int main()
         for (int i = 0; i < objects.size(); i++) 
         {
 
-            // handle collisions vs ground
             for (int j = 0; j < objects.size(); j++)
             {
                 if (i == j) continue;
