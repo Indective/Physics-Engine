@@ -74,15 +74,18 @@ void bodies::collisionres(AABB &a, AABB& b)
 
 void bodies::update(AABB &a, AABB& b,const float dt)
 {
-    std::cout << a.name << " poistion y : " << a.position.y << std::endl;
-    std::cout << a.name << " acc y : " << a.acceleration.y << std::endl;
-    if (AABBvsGround(a, b) && b.name == "ground")
+    if(a.position.y == 650 - a.height && a.velocity.x == 0)
+    {
+        return;
+    }
+
+    if (AABBvsGround(a, b))
     {
         applyfriction(a, b, dt);
     }
+
     else
     {
-        std::cout << "true" << std::endl;
         a.velocity.y += a.acceleration.y * dt;
         a.velocity.x += a.acceleration.x * dt;
     }
