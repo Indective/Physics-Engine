@@ -78,7 +78,7 @@ void bodies::update(AABB &a, AABB& b,const float dt)
     {
         return;
     }
-
+    
     if (AABBvsGround(a, b))
     {
         applyfriction(a, b, dt);

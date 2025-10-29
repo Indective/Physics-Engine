@@ -18,7 +18,7 @@ int main()
     box.velocity = {0,0};
     box.acceleration = {5,box.g};
     box.name = "box1";
-    box.color = RED;
+    box.color = RED;    
     box.trail.push_back(box.position);
     objects.push_back(box);
 
