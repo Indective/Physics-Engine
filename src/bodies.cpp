@@ -4,7 +4,9 @@
 #include <iostream>
 #include <cmath>
 
-bool bodies::AABBvsAABB(AABB& a, AABB& b)
+Constants con; 
+
+bool PhysicsSystem::AABBvsAABB(PhysicsObject& a, PhysicsObject& b) // checks for object collision (excluding ground)
 {
     return (a.position.x < b.position.x + b.width &&
             a.position.x + a.width > b.position.x &&
@@ -12,7 +14,7 @@ bool bodies::AABBvsAABB(AABB& a, AABB& b)
             a.position.y + a.height > b.position.y && (a.name != "ground" && b.name != "ground"));
 }
 
-void bodies::collisionres(AABB &a, AABB& b)
+void PhysicsSystem::collisionres(PhysicsObject &a, PhysicsObject& b) // resolves collision for all objects (including ground vs object)
 {
     if (AABBvsAABB(a, b)) 
     {
@@ -72,7 +74,7 @@ void bodies::collisionres(AABB &a, AABB& b)
 
 }
 
-void bodies::update(AABB &a, AABB& b,const float dt)
+void PhysicsSystem::update(PhysicsObject &a, PhysicsObject& b,const float dt) // updates velocity and position
 {
     if(a.position.y == 650 - a.height && a.velocity.x == 0)
     {
@@ -92,18 +94,12 @@ void bodies::update(AABB &a, AABB& b,const float dt)
 
     a.position.x += a.velocity.x * dt;
     a.position.y += a.velocity.y * dt;
-    a.trail.push_back(a.position);
 } 
 
-void bodies::draw(AABB &a)
-{
-    DrawRectangle(a.position.x,a.position.y,a.width,a.height,a.color);
-}
-
-void bodies::applyfriction(AABB &a, AABB &b,const float dt)
+void PhysicsSystem::applyfriction(PhysicsObject &a, PhysicsObject &b,const float dt) // applies friction on velocity.x when an object is colliding with the ground
 {
     const float stopThreshold = 0.5f;
-    const float frictionForce = friction * dt;
+    const float frictionForce = con.friction * dt;
 
     if(abs(a.velocity.y < 10))
     {
@@ -127,15 +123,16 @@ void bodies::applyfriction(AABB &a, AABB &b,const float dt)
     }
 }
 
-bool bodies::AABBvsGround(AABB &a, AABB &b)
+bool PhysicsSystem::AABBvsGround(PhysicsObject &a, PhysicsObject &b) // checks for a collision only between the ground and an object
 {
     if (b.name != "ground" && a.name != "ground") 
     {
         return false;
     }
     
-    AABB& obj = (a.name == "ground") ? b : a;
-    AABB& ground = (a.name == "ground") ? a : b;
+    PhysicsObject& obj = (a.name == "ground") ? b : a;
+    PhysicsObject& ground = (a.name == "ground") ? a : b;
 
     return obj.position.y + obj.height >= ground.position.y;
 }
+

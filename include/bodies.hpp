@@ -3,8 +3,7 @@
 #include <iostream>
 #include <vector>
 
-
-struct AABB
+struct PhysicsObject
 {
     Vector2 velocity;
     Vector2 position;
@@ -12,22 +11,20 @@ struct AABB
     float width, height;
     std::string name;
     Color color;
-    std::vector<Vector2> trail;
-    const float g = 100;
-
 };
 
-class bodies
+struct Constants
 {
-private:
+    const float g = 100;
     const float friction = 100.0f;
- 
-public:
-    bool AABBvsAABB(AABB& a, AABB& b);
-    void collisionres(AABB& a, AABB& ground);
-    void update(AABB& a, AABB& b, const float dt);
-    void draw(AABB& a);
-    void applyfriction(AABB& a, AABB &b, const float dt);
-    bool AABBvsGround(AABB& a, AABB& b);
+};
+
+namespace PhysicsSystem
+{
+    bool AABBvsAABB(PhysicsObject& a, PhysicsObject& b);
+    void collisionres(PhysicsObject& a, PhysicsObject& ground);
+    void update(PhysicsObject& a, PhysicsObject& b, const float dt);
+    void applyfriction(PhysicsObject& a, PhysicsObject &b, const float dt);
+    bool AABBvsGround(PhysicsObject& a, PhysicsObject& b);
 };
 
