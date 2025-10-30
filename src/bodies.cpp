@@ -123,7 +123,7 @@ void PhysicsSystem::applyfriction(PhysicsObject &a, PhysicsObject &b,const float
     }
 }
 
-bool PhysicsSystem::AABBvsGround(PhysicsObject &a, PhysicsObject &b) // checks for a collision only between the ground and an object
+bool PhysicsSystem::AABBvsGround(PhysicsObject &a, PhysicsObject &b) // checks for a collision only between ground and an object
 {
     if (b.name != "ground" && a.name != "ground") 
     {
@@ -135,4 +135,3 @@ bool PhysicsSystem::AABBvsGround(PhysicsObject &a, PhysicsObject &b) // checks f
 
     return obj.position.y + obj.height >= ground.position.y;
 }
-
